@@ -1,0 +1,15 @@
+{
+  "method": "Linear Interpolation (Baseline)",
+  "note": "RIFE deep learning model will significantly improve these scores",
+  "scores": {
+    "MSE": 0.000466,
+    "PSNR": 33.31,
+    "SSIM": 0.9086
+  },
+  "timestamps": {
+    "input_A": "2026-01-01  05:34 UTC",
+    "predicted": "2026-01-01  05:39 UTC (predicted)",
+    "ground_truth": "2026-01-01  05:39 UTC (real)",
+    "input_B": "2026-01-01  05:44 UTC"
+  }
+}

@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SatFrame-AI — PS12 Prototype</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #0A0E1A;
+      color: #E8EAF0;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: linear-gradient(135deg, #0D1B2A, #1A2744);
+      border-bottom: 2px solid #1E3A5F;
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .header-icon { font-size: 36px; }
+    .header-text h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .header-text p {
+      font-size: 12px;
+      color: #5B8FD4;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+    .badge {
+      margin-left: auto;
+      background: #FF6B35;
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 20px;
+      letter-spacing: 1px;
+    }
+
+    /* ── MAIN LAYOUT ── */
+    .container { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+
+    /* ── SECTION TITLES ── */
+    .section {
+      margin-bottom: 48px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #1E3A5F;
+    }
+    .section-num {
+      background: #1A3A6B;
+      color: #7BB3F0;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #D0D8F0;
+    }
+    .section-subtitle {
+      font-size: 13px;
+      color: #5B7AA0;
+      margin-top: 2px;
+    }
+
+    /* ── INFO BOX ── */
+    .info-box {
+      background: #0D1525;
+      border: 1px solid #1E3A5F;
+      border-left: 3px solid #5B8FD4;
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-size: 13px;
+      color: #8AADCC;
+      margin-bottom: 20px;
+      line-height: 1.7;
+    }
+    .info-box strong { color: #7BB3F0; }
+
+    /* ── COMPARISON GRID ── */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
+    .frame-card {
+      background: #0D1525;
+      border: 1px solid #1A2A40;
+      border-radius: 10px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .frame-card:hover { border-color: #5B8FD4; }
+    .frame-card.highlight {
+      border-color: #FF6B35;
+      box-shadow: 0 0 20px #FF6B3520;
+    }
+    .frame-card img {
+      width: 100%;
+      display: block;
+      border-radius: 6px 6px 0 0;
+    }
+    .frame-label {
+      padding: 12px 14px;
+    }
+    .frame-label .label-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #D0D8F0;
+      margin-bottom: 4px;
+    }
+    .frame-label .label-time {
+      font-size: 11px;
+      color: #4A6A9A;
+    }
+    .frame-label .label-badge {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .badge-input  { background: #1A3A6B; color: #7BB3F0; }
+    .badge-pred   { background: #FF6B3520; color: #FF6B35; }
+    .badge-real   { background: #27AE6020; color: #27AE60; }
+
+    /* ── METRICS ROW ── */
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .metric-card {
+      background: #0D1525;
+      border: 1px solid #1A2A40;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+    .metric-name {
+      font-size: 11px;
+      color: #4A6A9A;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+    .metric-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #FF6B35;
+    }
+    .metric-unit {
+      font-size: 11px;
+      color: #4A6A9A;
+      margin-top: 2px;
+    }
+    .metric-note {
+      font-size: 10px;
+      color: #2A4A6A;
+      margin-top: 8px;
+    }
+
+    .rife-note {
+      background: linear-gradient(135deg, #27AE6015, #0D1525);
+      border: 1px solid #27AE6030;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-top: 16px;
+      font-size: 13px;
+      color: #58D68D;
+      text-align: center;
+    }
+
+    /* ── ANIMATION SECTION ── */
+    .animation-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .anim-panel {
+      background: #0D1525;
+      border: 1px solid #1A2A40;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .anim-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid #1A2A40;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .anim-header .anim-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #D0D8F0;
+    }
+    .anim-header .anim-fps {
+      font-size: 10px;
+      color: #4A6A9A;
+      background: #0A1020;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+    .anim-display {
+      position: relative;
+      background: #060E1A;
+    }
+    .anim-display img {
+      width: 100%;
+      display: block;
+    }
+    .anim-timestamp {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      background: rgba(0,0,0,0.7);
+      color: #7BB3F0;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    .anim-counter {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(0,0,0,0.7);
+      color: #4A6A9A;
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+    .anim-controls {
+      padding: 12px 16px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .ctrl-btn {
+      background: #1A3A6B;
+      border: none;
+      color: #7BB3F0;
+      padding: 7px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .ctrl-btn:hover { background: #1E4A8B; }
+    .ctrl-btn.active { background: #FF6B35; color: white; }
+    .frame-count-label {
+      margin-left: auto;
+      font-size: 11px;
+      color: #4A6A9A;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      text-align: center;
+      padding: 32px;
+      font-size: 12px;
+      color: #2A4A6A;
+      border-top: 1px solid #1A2A40;
+      margin-top: 20px;
+    }
+    .footer span { color: #FF6B35; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-icon">🛰️</div>
+  <div class="header-text">
+    <h1>SatFrame-AI — Prototype Demo</h1>
+    <p>ISRO Bharatiya Antaṛiksh Hackathon 2026 · Problem Statement 12</p>
+  </div>
+  <div class="badge">PS-12 PROTOTYPE</div>
+</div>
+
+<div class="container">
+
+  <!-- SECTION 1 — DATA LOADED -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <div>
+        <div class="section-title">Satellite Data Successfully Loaded</div>
+        <div class="section-subtitle">GOES-19 ABI Channel 13 · Thermal Infrared (~10.3 µm) · Jan 1, 2026</div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <strong>What you are seeing:</strong> Real thermal infrared satellite data from the GOES-19 geostationary satellite.
+      Each pixel represents brightness temperature — <strong>darker = colder (cloud tops), brighter = warmer (land/sea surface)</strong>.
+      These are the raw .nc files downloaded from the NOAA AWS public bucket, processed with Python and displayed here.
+    </div>
+
+    <div class="comparison-grid" style="grid-template-columns: repeat(3,1fr)">
+      <div class="frame-card">
+        <img src="images/comparison/frame_t0.png" alt="Frame T0"
+             onerror="this.src='https://placehold.co/400x320/0A0E1A/5B8FD4?text=Run+process.py+first'"/>
+        <div class="frame-label">
+          <div class="label-title">GOES-19 · Frame 1</div>
+          <div class="label-time">2026-01-01 · 05:34 UTC</div>
+          <span class="label-badge badge-input">INPUT A</span>
+        </div>
+      </div>
+      <div class="frame-card">
+        <img src="images/comparison/frame_t2.png" alt="Frame T2"
+             onerror="this.src='https://placehold.co/400x320/0A0E1A/5B8FD4?text=Run+process.py+first'"/>
+        <div class="frame-label">
+          <div class="label-title">GOES-19 · Frame 3</div>
+          <div class="label-time">2026-01-01 · 05:44 UTC</div>
+          <span class="label-badge badge-input">INPUT B</span>
+        </div>
+      </div>
+      <div class="frame-card highlight">
+        <img src="images/comparison/frame_real.png" alt="Real middle frame"
+             onerror="this.src='https://placehold.co/400x320/0A0E1A/FF6B35?text=Run+process.py+first'"/>
+        <div class="frame-label">
+          <div class="label-title">GOES-19 · Frame 2 (Real)</div>
+          <div class="label-time">2026-01-01 · 05:39 UTC</div>
+          <span class="label-badge badge-real">GROUND TRUTH</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2 — INTERPOLATION COMPARISON -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <div>
+        <div class="section-title">Frame Interpolation Comparison</div>
+        <div class="section-subtitle">Input A + Input B → Predict the middle frame · Baseline vs Ground Truth</div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <strong>What we did:</strong> We took Frame A (05:34) and Frame B (05:44) as inputs and predicted
+      what the satellite would have seen at 05:39 — the middle point.
+      This prototype uses <strong>simple linear interpolation</strong> (pixel average) as a baseline.
+      During the hackathon, the <strong>RIFE deep learning model</strong> will replace this and produce
+      significantly sharper, more accurate predictions.
+    </div>
+
+    <div class="comparison-grid">
+      <div class="frame-card">
+        <img src="images/comparison/frame_t0.png" alt="Input A"
+             onerror="this.src='https://placehold.co/400x320/0A0E1A/5B8FD4?text=Run+process.py+first'"/>
+        <div class="frame-label">
+          <div class="label-title">Input Frame A</div>
+          <div class="label-time">05:34 UTC</div>
+          <span class="label-badge badge-input">INPUT</span>
+        </div>
+      </div>
+      <div class="frame-card highlight">
+        <img src="images/comparison/frame_predicted.png" alt="Predicted"
+             onerror="this.src='https://placehold.co/400x320/0A0E1A/FF6B35?text=Run+process.py+first'"/>
+        <div class="frame-label">
+          <div class="label-title">Predicted Frame (Linear Avg)</div>
+          <div class="label-time">05:39 UTC · Baseline method</div>
+          <span class="label-badge badge-pred">AI PREDICTED</span>
+        </div>
+      </div>
+      <div class="frame-card">
+        <img src="images/comparison/frame_real.png" alt="Ground Truth"
+             onerror="this.src='https://placehold.co/400x320/0A0E1A/27AE60?text=Run+process.py+first'"/>
+        <div class="frame-label">
+          <div class="label-title">Real Frame (Ground Truth)</div>
+          <div class="label-time">05:39 UTC · Actual satellite data</div>
+          <span class="label-badge badge-real">GROUND TRUTH</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- METRICS -->
+    <div class="metrics-row" id="metricsRow">
+      <div class="metric-card">
+        <div class="metric-name">MSE</div>
+        <div class="metric-value" id="mseVal">—</div>
+        <div class="metric-unit">Mean Squared Error</div>
+        <div class="metric-note">Lower is better · Target: &lt;0.005</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-name">PSNR</div>
+        <div class="metric-value" id="psnrVal">—</div>
+        <div class="metric-unit">dB · Peak Signal-to-Noise Ratio</div>
+        <div class="metric-note">Higher is better · Target: &gt;30 dB</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-name">SSIM</div>
+        <div class="metric-value" id="ssimVal">—</div>
+        <div class="metric-unit">Structural Similarity Index</div>
+        <div class="metric-note">Closer to 1.0 is better</div>
+      </div>
+    </div>
+
+    <div class="rife-note">
+       These are <strong>baseline scores</strong> from simple linear interpolation.
+      The <strong>RIFE deep learning model</strong> (to be trained during the hackathon)
+      will significantly improve SSIM and PSNR by learning actual cloud motion patterns.
+    </div>
+  </div>
+
+  <!-- SECTION 3 — ANIMATION -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <div>
+        <div class="section-title">Temporal Resolution Enhancement — Live Demo</div>
+        <div class="section-subtitle">Original 5-min frames vs AI-interpolated 2.5-min frames · Side by side</div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <strong>What you are seeing:</strong> LEFT shows the original satellite frames cycling at their natural 5-minute intervals.
+      RIGHT shows the same sequence with AI-interpolated frames added in between,
+      effectively <strong>doubling the temporal resolution</strong>.
+      Notice how the right animation is smoother — cloud features evolve more continuously.
+      During the hackathon, this will be applied to INSAT-3DS (30-min → 15-min → 7.5-min).
+    </div>
+
+    <div class="animation-grid">
+      <!-- Original animation -->
+      <div class="anim-panel">
+        <div class="anim-header">
+          <span class="anim-title">📡 Original GOES-19 Frames</span>
+          <span class="anim-fps">6 frames · 5-min intervals</span>
+        </div>
+        <div class="anim-display">
+          <img id="origImg"
+               src="images/animation/orig_01.png"
+               alt="Original frame"
+               onerror="this.src='https://placehold.co/500x400/060E1A/5B8FD4?text=Run+process.py+first'"/>
+          <div class="anim-timestamp" id="origTime">05:34 UTC</div>
+          <div class="anim-counter" id="origCounter">1 / 6</div>
+        </div>
+        <div class="anim-controls">
+          <button class="ctrl-btn" onclick="toggleOrig()" id="origBtn">▶ Play</button>
+          <button class="ctrl-btn" onclick="stepOrig(-1)">◀ Prev</button>
+          <button class="ctrl-btn" onclick="stepOrig(1)">Next ▶</button>
+          <span class="frame-count-label">6 frames total</span>
+        </div>
+      </div>
+
+      <!-- Interpolated animation -->
+      <div class="anim-panel">
+        <div class="anim-header">
+          <span class="anim-title">🤖 AI-Interpolated Frames</span>
+          <span class="anim-fps">11 frames · 2.5-min intervals</span>
+        </div>
+        <div class="anim-display">
+          <img id="interpImg"
+               src="images/animation/interp_01.png"
+               alt="Interpolated frame"
+               onerror="this.src='https://placehold.co/500x400/060E1A/FF6B35?text=Run+process.py+first'"/>
+          <div class="anim-timestamp" id="interpTime">05:34 UTC</div>
+          <div class="anim-counter" id="interpCounter">1 / 11</div>
+        </div>
+        <div class="anim-controls">
+          <button class="ctrl-btn" onclick="toggleInterp()" id="interpBtn">▶ Play</button>
+          <button class="ctrl-btn" onclick="stepInterp(-1)">◀ Prev</button>
+          <button class="ctrl-btn" onclick="stepInterp(1)">Next ▶</button>
+          <span class="frame-count-label">11 frames total</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <strong>SatFrame-AI</strong> · ISRO Bharatiya Antaṛiksh Hackathon 2026 ·
+  Problem Statement <span>PS-12</span> · Prototype Built with Python + HTML
+</div>
+
+<!-- JAVASCRIPT -->
+<script>
+  // ── Load metrics from metrics.json ──
+  fetch('metrics.json')
+    .then(r => r.json())
+    .then(data => {
+      const s = data.scores;
+      document.getElementById('mseVal').textContent  = s.MSE;
+      document.getElementById('psnrVal').textContent = s.PSNR;
+      document.getElementById('ssimVal').textContent = s.SSIM;
+    })
+    .catch(() => {
+      // metrics.json not found — show placeholder
+      document.getElementById('mseVal').textContent  = 'Run';
+      document.getElementById('psnrVal').textContent = 'process';
+      document.getElementById('ssimVal').textContent = '.py';
+    });
+
+  // ── Original animation (6 frames) ──
+  const origFrames = [
+    { src: 'images/animation/orig_01.png', time: '05:34 UTC' },
+    { src: 'images/animation/orig_02.png', time: '05:39 UTC' },
+    { src: 'images/animation/orig_03.png', time: '05:44 UTC' },
+    { src: 'images/animation/orig_04.png', time: '05:49 UTC' },
+    { src: 'images/animation/orig_05.png', time: '05:54 UTC' },
+    { src: 'images/animation/orig_06.png', time: '05:59 UTC' },
+  ];
+
+  // ── Interpolated animation (11 frames) ──
+  const interpFrames = [
+    { src: 'images/animation/interp_01.png', time: '05:34 UTC' },
+    { src: 'images/animation/interp_02.png', time: '05:37 UTC (AI)' },
+    { src: 'images/animation/interp_03.png', time: '05:39 UTC' },
+    { src: 'images/animation/interp_04.png', time: '05:42 UTC (AI)' },
+    { src: 'images/animation/interp_05.png', time: '05:44 UTC' },
+    { src: 'images/animation/interp_06.png', time: '05:47 UTC (AI)' },
+    { src: 'images/animation/interp_07.png', time: '05:49 UTC' },
+    { src: 'images/animation/interp_08.png', time: '05:52 UTC (AI)' },
+    { src: 'images/animation/interp_09.png', time: '05:54 UTC' },
+    { src: 'images/animation/interp_10.png', time: '05:57 UTC (AI)' },
+    { src: 'images/animation/interp_11.png', time: '05:59 UTC' },
+  ];
+
+  let origIdx    = 0;
+  let interpIdx  = 0;
+  let origTimer  = null;
+  let interpTimer = null;
+
+  function updateOrig() {
+    const f = origFrames[origIdx];
+    document.getElementById('origImg').src = f.src;
+    document.getElementById('origTime').textContent = f.time;
+    document.getElementById('origCounter').textContent = `${origIdx+1} / ${origFrames.length}`;
+  }
+
+  function updateInterp() {
+    const f = interpFrames[interpIdx];
+    document.getElementById('interpImg').src = f.src;
+    document.getElementById('interpTime').textContent = f.time;
+    document.getElementById('interpCounter').textContent = `${interpIdx+1} / ${interpFrames.length}`;
+  }
+
+  function stepOrig(dir) {
+    origIdx = (origIdx + dir + origFrames.length) % origFrames.length;
+    updateOrig();
+  }
+
+  function stepInterp(dir) {
+    interpIdx = (interpIdx + dir + interpFrames.length) % interpFrames.length;
+    updateInterp();
+  }
+
+  function toggleOrig() {
+    const btn = document.getElementById('origBtn');
+    if (origTimer) {
+      clearInterval(origTimer);
+      origTimer = null;
+      btn.textContent = '▶ Play';
+      btn.classList.remove('active');
+    } else {
+      origTimer = setInterval(() => {
+        origIdx = (origIdx + 1) % origFrames.length;
+        updateOrig();
+      }, 800);
+      btn.textContent = '⏸ Pause';
+      btn.classList.add('active');
+    }
+  }
+
+  function toggleInterp() {
+    const btn = document.getElementById('interpBtn');
+    if (interpTimer) {
+      clearInterval(interpTimer);
+      interpTimer = null;
+      btn.textContent = '▶ Play';
+      btn.classList.remove('active');
+    } else {
+      interpTimer = setInterval(() => {
+        interpIdx = (interpIdx + 1) % interpFrames.length;
+        updateInterp();
+      }, 800);
+      btn.textContent = '⏸ Pause';
+      btn.classList.add('active');
+    }
+  }
+
+  // Auto-start both animations when page loads
+  window.onload = () => {
+    updateOrig();
+    updateInterp();
+    // Small delay then auto-play both
+    setTimeout(() => {
+      toggleOrig();
+      toggleInterp();
+    }, 1000);
+  };
+</script>
+
+</body>
+</html>
